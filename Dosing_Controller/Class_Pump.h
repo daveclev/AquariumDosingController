@@ -5,6 +5,7 @@
 class Pump{ // An instance of Pump class will be created for each output.
   public:
     byte outputPin; // OutputPin is the output that the pump is wired to.
+    bool state; // true or false regarding pump running status
     
     Pump(byte x){ // Constructor for Register class
       outputPin = x; // the output that the pump is connected to
@@ -19,7 +20,8 @@ class Pump{ // An instance of Pump class will be created for each output.
     //  Turn on an output pin.  
     //  Simply sending 0x08 to a register will turn on that bit of a register, but will turn off all other bits. 
     //  To preserve state of other bits we must "OR" existing content of of the register to a mask such as 0b00001000.
-    void ON(){ // Turn on the pump
+    void ON(){ // Turn the pump on
+      state = true;
       byte I2C; // This will be the I2C address of the appropriate IO Expader, U12 (outputs -8) or U10 (outputs 9-16).
       byte outP; // This will be the IO pin on the IO expander.
       byte p; // This variable will be the value at the GPIO, the appropriate bit (outP) needs to be set to turn on the pump.
@@ -27,7 +29,7 @@ class Pump{ // An instance of Pump class will be created for each output.
         I2C = 0x22; // Controller outputs 8-15 are on U10, 
         outP = outputPin -8; // Shifts outputs 8-15 to pins 0-7 on U10.
       }else{
-        I2C = 0x24; // Controller outputs 9-16 are on U12, 
+        I2C = 0x24; // Controller outputs 0-7 are on U12, 
         outP = outputPin; // Controller outputs 0-7 map directly to pins on U12.
       }
       Wire.beginTransmission(I2C); // Wake up the IO device.
@@ -42,7 +44,8 @@ class Pump{ // An instance of Pump class will be created for each output.
       Wire.endTransmission();
       } //  End of ON method.
 
-    void OFF(){ // Turn on the pump
+    void OFF(){ // Turn the pump off
+      state = false;
       byte I2C; // This will be the I2C address of the appropriate IO Expader, U12 (outputs -8) or U10 (outputs 9-16).
       byte outP; // This will be the IO pin on the IO expander.
       byte p; // This variable will be the value at the GPIO, the appropriate bit (outP) needs to be set to turn on the pump.

@@ -388,9 +388,12 @@ void pumpUpdate(){
       if (startStageFlag){// Initialize this stage
         startStageFlag = false;
         lcd.clear();
-        lcd.setCursor(0,2);
+        lcd.setCursor(0,0);
         lcd.print("Dose cycle complete.");
-        lcd.setCursor(0,3);
+        lcd.setCursor(0,1);
+        lcd.print("Cycle Count: ");
+        displayNum(cycleCounter,15,1);
+        lcd.setCursor(0,2);
         lcd.print("Next cycle: ");
         if(startHr<10){lcd.print("0");}
         lcd.print(startHr);
@@ -400,11 +403,13 @@ void pumpUpdate(){
         lcd.print(":");
         if(startSec<10){lcd.print("0");}
         lcd.print(startSec);
-        lcd.setCursor(0,1);
-        Relay.PinON(GPIO,1); // Turn ON the LED at bit1 of the lighted pushbutton connected to bit1 to signal end off dosing cycle.
+        delay(1500);
+        cycleCounter ++;
+        displayNum(cycleCounter,15,1);
+        DosEEPROM.memWrite(cycleCounterMem,cycleCounter);
       }
 
-      lcd.setCursor(10,0);
+      lcd.setCursor(10,3);
       rtc.updateTime();
       hh = rtc.getHours();
       mm = rtc.getMinutes();

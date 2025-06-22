@@ -218,6 +218,7 @@ void retrieveEEPROM(){ // This procedure is called from the "Start" routine and 
   startMin = DosEEPROM.memReadInt(startMinMem); //  Address 0x0006
   startSec = DosEEPROM.memReadInt(startSecMem); //  Address 0x0008
   tempSetpoint = DosEEPROM.memReadInt(tempSetpointMem); //  Address 0x000A
+  cycleCounter = DosEEPROM.memReadInt(cycleCounterMem); //  Address 0x000C
   flush1.count = DosEEPROM.memReadInt(flush1.memBase); 
   flush1.countDown = DosEEPROM.memReadInt(flush1.memBase+2); 
   flush1.running = DosEEPROM.memReadBool(flush1.memBase+4); 
@@ -346,8 +347,13 @@ void retrieveEEPROM(){ // This procedure is called from the "Start" routine and 
 
 // This function is only used to store an initial set of values in an empty EEPROM.
 void initializeEEPROM(){
-  currentStage=21;
+  DosEEPROM.memWrite(0x0004, startHr); // Initialize hour for start time, startHr, int
+  DosEEPROM.memWrite(0x0006, startMin); // Initialize minutes for start time, startMin, int.
+  DosEEPROM.memWrite(0x0008, startSec); // Initialize minusecodstes for start time, startSec, int.
   DosEEPROM.memWrite(currentStageMem, currentStage);
+  DosEEPROM.memWrite(tempSetpointMem,tempSetpoint);
+  DosEEPROM.memWrite(currentStageMem, 21);
+  DosEEPROM.memWrite(cycleCounterMem,0);
   DosEEPROM.memWrite(flush1.memBase, flush1.count); // stores an integer, two bytes
   DosEEPROM.memWrite(flush1.memBase+2, flush1.countDown); // stores an integer, two bytes
   DosEEPROM.memWrite(flush1.memBase+4, flush1.running); // stores boolean, one byte

@@ -13,7 +13,12 @@
 //  March 14, 2025 - This revision expands the stage sequence and pump arrangement to include actions
 //  for the raptor tank.
 //  This revision also includes provisions for the blue lighted pushbutton which will provide a 
-//  confirmation that the dosing cycle was completed. Pushbutton: uxcell Momentary Metal Push Button Switch 12mm Mounting Dia 1NO 3-6V Blue LED Light, Flat Head, 2pcs
+//  confirmation that the dosing cycle was completed. Pushbutton: uxcell Momentary Metal Push 
+/////////////////////////////////////
+//  April 18 2025 - This revision adds a cycle counter and manual output (pump) control.
+//  The cycle counter is incremented each time the final stage of the dosing cycle is reached 
+//  The right-most position on the selector switch selects manual output (pump) control.
+//  The rotary encoder selects the desired output (pump); the selected output is turned on and off with the pushbuttons. 
 /////////////////////////////////////
 
 #include <Wire.h> `
@@ -128,6 +133,8 @@ int startSecMem = 0x0008;
 bool stageCompleteFlag = false, startStageFlag = true;
 byte MtcePage;
 bool startMtceFlag;
+int cycleCounter;
+int cycleCounterMem = 0x000C;
 
 char maintenanceHeader[] = "Maintenance page: ";
 char maintenanceMenu1[] = "Previos Edit    Next";
@@ -186,11 +193,7 @@ void setup() {
 
   // Uncomment the next line to load a set of values into a new unpopulated EEPROM, i.e.: and new ESP32.
   // initializeEEPROM();  // This procedure is only used to store an initial set of values in an empty EEPROM.
-  //DosEEPROM.memWrite(0x0004, startHr); // Initialize hour for start time, startHr, int
-  //DosEEPROM.memWrite(0x0006, startMin); // Initialize minutes for start time, startMin, int.
-  //DosEEPROM.memWrite(0x0008, startSec); // Initialize minusecodstes for start time, startSec, int.
-  //DosEEPROM.memWrite(currentStageMem, currentStage);
-  DosEEPROM.memWrite(tempSetpointMem,tempSetpoint);
+  //DosEEPROM.memWrite(cycleCounterMem,0);
 
   retrieveEEPROM(); // Loads stored values from EEPROM.
 
